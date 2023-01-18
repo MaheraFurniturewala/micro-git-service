@@ -21,7 +21,7 @@ module.exports = async function makeCommit(diff, repo, branch) {
         const sha = await postSha(diff[file], repo)
         tree.tree.push({
             path: file,
-            mode: "100644",
+            mode: "100755",
             type: "blob",
             sha
         })

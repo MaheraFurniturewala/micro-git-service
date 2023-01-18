@@ -1,27 +1,29 @@
 const getContent = require("./getContent")
 const makeCommit = require("./makeCommit")
 
-module.exports = async function onPush() {
-    // const { refs, repository } = context
-    // const { name, head_commit } = repository
-    // const { added, modified } = head_commit
+module.exports = async function onPush(context) {
+    const { refs, repository, pusher, head_commit } = context.payload
 
-    //const branch = refs.split("/")[refs.split("/").length - 1]
+    if (pusher.name !== "tiny-hack[bot]") {
+        const { name } = repository
+        const { added, modified } = head_commit
 
-    let branch = "main"
-    let repo = "client"
-    let path = "src/types"
+        //const branch = refs.split("/")[refs.split("/").length - 1]
 
-    //let all = [...added, ...modified]
-    //all = all.filter((file) => file.includes(path))
+        let branch = "main"
+        let repo = "client"
+        let path = "src/types"
 
-    let all = ["src/types/message.ts"]
-    const blobs = {}
+        let all = [...added, ...modified]
+        all = all.filter((file) => file.includes(path))
 
-    for (const file of all) {
-        const content = await getContent("1407arjun", "server", file)
-        blobs[file] = content
+        const blobs = {}
+
+        for (const file of all) {
+            const content = await getContent("1407arjun", name, file)
+            blobs[file] = content
+        }
+
+        await makeCommit(blobs, repo, branch)
     }
-
-    await makeCommit(blobs, repo, branch)
 }

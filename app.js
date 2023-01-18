@@ -32,10 +32,9 @@ module.exports = async (app, { getRouter }) => {
         // const repoNames = prompt(
         //     "Enter the repos to be mapped (space seperated): "
         // ).split(" ")
-
         // await mapRepos(repoNames)
-        await onPush()
-        res.end()
+        //await onPush()
+        //res.end()
     })
 
     app.on("push", onPush)
