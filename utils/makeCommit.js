@@ -1,19 +1,25 @@
 async function postSha(content, repo) {
-    const { sha } = await octokit.request(
-        "POST /repos/1407arjun/{repo}/git/blobs",
-        { repo, body: { content, encoding: "base64" } }
-    )
-    return sha
+    let sha = await octokit.request("POST /repos/1407arjun/{repo}/git/blobs", {
+        repo,
+        content,
+        encoding: "base64"
+    })
+
+    return sha.data.sha
 }
 
 module.exports = async function makeCommit(diff, repo, branch) {
-    const last_sha = await octokit.request(
+    app.log(diff)
+    let last_sha = await octokit.request(
         "GET /repos/1407arjun/{repo}/branches/{branch_name}",
         { repo, branch_name: branch }
-    ).commit.sha
+    )
+
+    last_sha = last_sha.data.commit.sha
 
     const tree = { base_tree: last_sha, tree: [] }
-    for (const file in Object.keys(diff)) {
+    for (const file of Object.keys(diff)) {
+        app.log(diff[file])
         const sha = await postSha(diff[file], repo)
         tree.tree.push({
             path: file,
@@ -23,36 +29,38 @@ module.exports = async function makeCommit(diff, repo, branch) {
         })
     }
 
-    const treeSha = await octokit.request(
-        "POST /repos/1407arjun/{repo}/git/trees",
-        { repo, body: tree }
-    ).sha
+    app.log(tree)
 
-    const { sha } = await octokit.request(
+    let treeSha = await octokit.request(
+        "POST /repos/1407arjun/{repo}/git/trees",
+        { repo, ...tree }
+    )
+
+    treeSha = treeSha.data.sha
+
+    let sha = await octokit.request(
         "POST /repos/1407arjun/{repo}/git/commits",
         {
             repo,
-            body: {
-                message: "Sync files",
-                author: {
-                    name: "tiny-hack",
-                    email: "noreply@tinyhack.co"
-                },
-                parents: [last_sha],
-                tree: treeSha
-            }
+            message: "Sync files",
+            author: {
+                name: "tiny-hack",
+                email: "noreply@tinyhack.co"
+            },
+            parents: [last_sha],
+            tree: treeSha
         }
     )
+
+    sha = sha.data.sha
 
     await octokit.request(
         "POST /repos/1407arjun/{repo}/git/refs/heads/{branch}",
         {
             repo,
             branch,
-            body: {
-                ref: `refs/heads/${branch}`,
-                sha
-            }
+            ref: `refs/heads/${branch}`,
+            sha
         }
     )
 }
