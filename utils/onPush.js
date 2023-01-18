@@ -1,4 +1,5 @@
 const getContent = require("./getContent")
+const makeCommit = require("./makeCommit")
 
 module.exports = async function onPush(context) {
     const { refs, repository } = context
@@ -14,10 +15,12 @@ module.exports = async function onPush(context) {
     let all = [...added, ...modified]
     all = all.filter((file) => file.includes(path))
 
-    const blobs = []
+    const blobs = {}
 
     for (const file of all) {
-        const content = await getContent("1407arjun", repo, path, false)
-        blobs.push(content)
+        const content = await getContent("1407arjun", repo, file)
+        blobs[file] = content
     }
+
+    await makeCommit(blobs, repo, branch)
 }
