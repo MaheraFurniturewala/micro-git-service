@@ -15,7 +15,8 @@
     "@octokit/core": "^3.6.0",
     "@octokit/rest": "^19.0.5",
     "dotenv": "^16.0.3",
-    "probot": "^12.2.7"
+    "probot": "^12.2.7",
+    "prompt-sync": "^4.2.0"
   },
   "devDependencies": {
     "nock": "^13.2.9",
