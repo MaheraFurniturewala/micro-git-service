@@ -11,10 +11,10 @@ module.exports = async function mapRepos(repoNames) {
             }
 
             if (!maps[repo][jsonContent.branch]) {
-                maps[repo][jsonContent.branch] = []
+                maps[repo][jsonContent.branch] = {}
             }
 
-            maps[repo][jsonContent.branch].push(jsonContent.path)
+            maps[repo][jsonContent.branch].path = jsonContent.path
         }
         app.log(maps)
     } catch (err) {
