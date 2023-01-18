@@ -4,8 +4,8 @@
 
 const { Octokit } = require("@octokit/core")
 const { createAppAuth } = require("@octokit/auth-app")
-const getContent = require("./utils/getContent")
-const getRepos = require("./utils/getRepos")
+const mapRepos = require("./utils/mapRepos")
+const onPush = require("./utils/onPush")
 
 require("dotenv").config()
 
@@ -20,6 +20,8 @@ module.exports = async (app, { getRouter }) => {
     })
 
     global.octokit = installationOctokit
+    global.maps = {}
+    global.app = app
 
     app.log("Yay! The app was loaded!")
 
@@ -31,25 +33,8 @@ module.exports = async (app, { getRouter }) => {
             "Enter the repos to be mapped (space seperated): "
         ).split(" ")
 
-        try {
-            const repos = []
-
-            for (const repo of repoNames) {
-                const mapFile = await getContent(
-                    "1407arjun",
-                    repo,
-                    ".gitignore"
-                )
-                repos.push({ name: repo, mapping: mapFile.split("\n") })
-            }
-        } catch (err) {
-            app.log(err.message)
-        }
+        await mapRepos(repoNames)
     })
 
-    app.on("issues.opened", async (context) => {
-        return context.octokit.issues.createComment(
-            context.issue({ body: "Hello, World!" })
-        )
-    })
+    app.on("push", onPush)
 }
