@@ -25,17 +25,11 @@ module.exports = async (app, { getRouter }) => {
 
     app.log("Yay! The app was loaded!")
 
-    const server = getRouter("/")
-
-    server.get("/repo", async (req, res) => {
-        // const prompt = require("prompt-sync")({ sigint: true })
-        // const repoNames = prompt(
-        //     "Enter the repos to be mapped (space seperated): "
-        // ).split(" ")
-        // await mapRepos(repoNames)
-        //await onPush()
-        //res.end()
-    })
+    const prompt = require("prompt-sync")({ sigint: true })
+    const repoNames = prompt(
+        "Enter the repos to be mapped (space seperated): "
+    ).split(" ")
+    await mapRepos(repoNames)
 
     app.on("push", onPush)
 }

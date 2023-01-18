@@ -8,8 +8,6 @@ module.exports = async function onPush(context) {
         const { name } = repository
         const { added, modified } = head_commit
 
-        //const branch = refs.split("/")[refs.split("/").length - 1]
-
         let branch = "main"
         let repo = "client"
         let path = "src/types"
