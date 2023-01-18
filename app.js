@@ -35,6 +35,7 @@ module.exports = async (app, { getRouter }) => {
 
         // await mapRepos(repoNames)
         await onPush()
+        res.end()
     })
 
     app.on("push", onPush)

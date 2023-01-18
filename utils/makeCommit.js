@@ -2,7 +2,7 @@ async function postSha(content, repo) {
     let sha = await octokit.request("POST /repos/1407arjun/{repo}/git/blobs", {
         repo,
         content,
-        encoding: "base64"
+        encoding: "utf-8"
     })
 
     return sha.data.sha

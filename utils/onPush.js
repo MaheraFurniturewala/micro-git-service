@@ -19,7 +19,7 @@ module.exports = async function onPush() {
     const blobs = {}
 
     for (const file of all) {
-        const content = await getContent("1407arjun", repo, file)
+        const content = await getContent("1407arjun", "server", file)
         blobs[file] = content
     }
 
