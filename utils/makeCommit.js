@@ -9,7 +9,6 @@ async function postSha(content, repo) {
 }
 
 module.exports = async function makeCommit(diff, repo, branch) {
-    app.log(diff)
     let last_sha = await octokit.request(
         "GET /repos/1407arjun/{repo}/branches/{branch_name}",
         { repo, branch_name: branch }
@@ -19,7 +18,6 @@ module.exports = async function makeCommit(diff, repo, branch) {
 
     const tree = { base_tree: last_sha, tree: [] }
     for (const file of Object.keys(diff)) {
-        app.log(diff[file])
         const sha = await postSha(diff[file], repo)
         tree.tree.push({
             path: file,
@@ -28,8 +26,6 @@ module.exports = async function makeCommit(diff, repo, branch) {
             sha
         })
     }
-
-    app.log(tree)
 
     let treeSha = await octokit.request(
         "POST /repos/1407arjun/{repo}/git/trees",
