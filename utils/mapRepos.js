@@ -16,6 +16,7 @@ module.exports = async function mapRepos(repoNames) {
 
             maps[repo][jsonContent.branch].path = jsonContent.path
         }
+        app.log(maps)
     } catch (err) {
         app.log(err.message)
     }
